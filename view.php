@@ -69,7 +69,7 @@ $conn->close();
             <div class="card-header">Views</div>
             <div class="card-body">
                 <h4 class="card-title">Number of Views</h4>
-                <p class="card-text"><?php echo $views; ?></p>
+                <p class="card-text"><?php if($view){ echo $views; } else {echo '0';}  ?></p>
             </div>
         </div>
         <form method="post">
