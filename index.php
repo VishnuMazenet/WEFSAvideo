@@ -90,7 +90,7 @@ $conn->close();
       }
       if (name !== null && name !== "") {
         $.ajax({
-          url: "save_name.php",
+          url: "save.php",
           method: "POST",
           data: {
             name: name,

@@ -33,7 +33,7 @@ if ($result->num_rows > 0) {
     echo '<tbody id="viewerTable">';
     while ($row = $result->fetch_assoc()) {
         echo '<tr>';
-        echo '<td>' . htmlspecialchars($row["id"]) . '</td>'; 
+        echo '<td>' . htmlspecialchars($row["id"]) . '</td>';
         echo '<td>' . htmlspecialchars($row["name"]) . '</td>';
         echo '</tr>';
     }
@@ -87,6 +87,50 @@ $conn->close();
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
             });
+            // Delete views button
+            $("#dview").click(function() {
+                // Show confirmation dialog box
+                if (confirm("Are you sure you want to delete the views?")) {
+                    // User clicked OK, proceed with AJAX call
+                    $.ajax({
+                        url: "delete_views.php",
+                        type: "POST",
+                        success: function(data) {
+                            // Show success message
+                            alert(data);
+                            // Reload the page to update the views
+                            location.reload();
+                        },
+                        error: function() {
+                            // Show error message
+                            alert("Error deleting views");
+                        }
+                    });
+                }
+            });
+
+            // Delete viewers button
+            $("#dviewer").click(function() {
+                // Show confirmation dialog box
+                if (confirm("Are you sure you want to delete the viewers?")) {
+                    // User clicked OK, proceed with AJAX call
+                    $.ajax({
+                        url: "delete_viewers.php",
+                        type: "POST",
+                        success: function(data) {
+                            // Show success message
+                            alert(data);
+                            // Reload the page to update the viewers table
+                            location.reload();
+                        },
+                        error: function() {
+                            // Show error message
+                            alert("Error deleting viewers");
+                        }
+                    });
+                }
+            });
+
         });
     </script>
 </body>
