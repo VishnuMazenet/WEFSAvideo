@@ -1,7 +1,27 @@
 <?php
 
-include "config.php";
-$stmt = $conn->prepare("SELECT views FROM views");
+include("config.php");
+
+$stmt = $conn->prepare("SELECT admin_name FROM view_admin");
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $admin = $row['admin_name'];
+    }
+}
+echo "<div class='container'>";
+echo "<div class='card text-white bg-success mb-3' style='max-width: 20rem;'>";
+echo " <div class='card card-header'><h5><b>Edit Admin Name</b></h5></div>";
+echo "<div class='card-body'>";
+// echo "<h4 class='card card-title'>Edit Admin Name</h4>";
+echo "<input type = 'text' class='form-control' placeholder='Admin Name' id='admin' value = '$admin'></input><br>";
+echo "<button class = 'card btn btn-success bg bg-success' id = 'update_admin' type = 'submit'>Update</button>";
+echo "</div>";
+echo "</div>";
+echo "</div>";
+
+$stmt = $conn->prepare("SELECT views FROM views where id = 1");
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -10,8 +30,9 @@ if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $views = $row["views"];
     }
+} else {
+    $views = 0;
 }
-include("config.php");
 
 // Retrieve the viewers' names from the database
 $sql = "SELECT * FROM viewers";
@@ -69,7 +90,7 @@ $conn->close();
             <div class="card-header">Views</div>
             <div class="card-body">
                 <h4 class="card-title">Number of Views</h4>
-                <p class="card-text"><?php if($view){ echo $views; } else {echo '0';}  ?></p>
+                <p class="card-text"><?php echo $views; ?></p>
             </div>
         </div>
         <form method="post">
@@ -87,6 +108,24 @@ $conn->close();
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
             });
+            //Update Admin
+            $("#update_admin").click(function() {
+                var admin = document.getElementById("admin").value;
+                $.ajax({
+                    url: "admin_update.php",
+                    type: "POST",
+                    data: {
+                        admin: admin
+                    },
+                    success: function(data) {
+                        //alert(data);
+                        location.reload();
+                    },
+                    error: function() {
+                        alert("Error updating admin name");
+                    }
+                })
+            });
             // Delete views button
             $("#dview").click(function() {
                 // Show confirmation dialog box
@@ -97,7 +136,7 @@ $conn->close();
                         type: "POST",
                         success: function(data) {
                             // Show success message
-                            alert(data);
+                            // alert(data);
                             // Reload the page to update the views
                             location.reload();
                         },
@@ -119,7 +158,7 @@ $conn->close();
                         type: "POST",
                         success: function(data) {
                             // Show success message
-                            alert(data);
+                            // alert(data);
                             // Reload the page to update the viewers table
                             location.reload();
                         },
@@ -134,5 +173,4 @@ $conn->close();
         });
     </script>
 </body>
-
 </html>

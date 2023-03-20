@@ -4,7 +4,11 @@ include "config.php";
 $name = $_POST['name'];
 $stmt = $conn->prepare("INSERT INTO viewers (name) VALUES (?)");
 $stmt->bind_param("s", $name);
-$stmt->execute();
+if ($stmt->execute() === FALSE) {
+  echo "Error inserting names." . $stmt->error;
+} else {
+  echo "<script> console.log('Name have been inserted'); </script>";
+}
 
 $views = $_POST['views'];
 

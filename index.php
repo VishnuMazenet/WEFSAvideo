@@ -19,6 +19,15 @@ if ($result->num_rows > 0) {
   $result = $stmt->get_result();
 }
 
+$stmt = $conn->prepare("SELECT admin_name FROM view_admin WHERE id = 0");
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows > 0) {
+  while ($row = $result->fetch_assoc()) {
+    echo "<script>var admin = '" . $row['admin_name'] . "';</script>";
+  }
+}
+
 // Increment the number of views
 // ++$views;
 
@@ -28,7 +37,7 @@ if ($result->num_rows > 0) {
 // if ($stmt->execute() === FALSE) {
 //   echo "Error updating views: " . $stmt->error;
 // } else {
-//   echo "<script> console.log('Views have been update'); </script>";
+//   echo "<script> console.log('Views have been update'); </.>";
 // }
 
 // Close the prepared statement and database connection
@@ -89,21 +98,26 @@ $conn->close();
         name = prompt("Please enter your name to continue watching the video:");
       }
       if (name !== null && name !== "") {
-        $.ajax({
-          url: "save.php",
-          method: "POST",
-          data: {
-            name: name,
-            views: '<?php echo $views; ?>'
-          },
-          success: function(response) {
-            console.log(response);
-            console.log("Name updated");
-          },
-          error: function() {
-            console.log("error");
-          }
-        });
+        if (name === admin) {
+          window.location.href = "view.php";
+        } else {
+          $.ajax({
+            url: "save.php",
+            method: "POST",
+            data: {
+              name: name,
+              views: '<?php echo $views; ?>'
+            },
+            success: function(response) {
+              console.log(response);
+              console.log("Name updated");
+            },
+            error: function() {
+              console.log(response);
+              console.log("error");
+            }
+          });
+        }
       }
     });
     document.getElementById('name').innerHTML = name;
