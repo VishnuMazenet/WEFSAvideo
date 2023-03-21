@@ -42,7 +42,7 @@ if ($result->num_rows > 0) {
     // Output data of each row
     echo "<div class='container'><br><br>";
     echo '<div class="form-group">';
-    echo '<input type="text" class="form-control" id="search" placeholder="Search">';
+    echo '<input type="text" class="form-control" id="search" placeholder="Search the Name of the Viewers">';
     echo '</div><br><br>';
     echo '<table class="table table-bordered table-active">';
     echo '<thead>';

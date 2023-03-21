@@ -2,15 +2,14 @@
 include "config.php";
 
 // Prepare the query to retrieve the number of views from the database
-$stmt = $conn->prepare("SELECT views FROM views");
+$stmt = $conn->prepare("SELECT views FROM views WHERE id = 1");
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
-  // Output data of each row
-  while ($row = $result->fetch_assoc()) {
-    $views = $row["views"];
-  }
+  $row = $result->fetch_assoc();
+  $views = $row["views"];
+  
 } else {
   $views = 0;
   $stmt = $conn->prepare("INSERT INTO views (views) VALUE (?)");
@@ -19,26 +18,13 @@ if ($result->num_rows > 0) {
   $result = $stmt->get_result();
 }
 
-$stmt = $conn->prepare("SELECT admin_name FROM view_admin WHERE id = 0");
+$stmt = $conn->prepare("SELECT admin_name FROM view_admin WHERE id = 1");
 $stmt->execute();
 $result = $stmt->get_result();
 if ($result->num_rows > 0) {
-  while ($row = $result->fetch_assoc()) {
-    echo "<script>var admin = '" . $row['admin_name'] . "';</script>";
-  }
+  $row = $result->fetch_assoc();
+  $admin = $row['admin_name'];
 }
-
-// Increment the number of views
-// ++$views;
-
-// // Prepare the query to update the number of views in the database
-// $stmt = $conn->prepare("UPDATE views SET views=? WHERE id=1");
-// $stmt->bind_param("i", $views);
-// if ($stmt->execute() === FALSE) {
-//   echo "Error updating views: " . $stmt->error;
-// } else {
-//   echo "<script> console.log('Views have been update'); </.>";
-// }
 
 // Close the prepared statement and database connection
 $stmt->close();
@@ -56,7 +42,6 @@ $conn->close();
   <title>WEFSA</title>
   <link rel="stylesheet" href="bootstrap.min.css">
   <script src="jquery-3.6.4.min.js"></script>
-  <!-- <link rel="stylesheet" href="style.css"> -->
 </head>
 
 <body>
@@ -89,9 +74,9 @@ $conn->close();
       </div>
     </div>
   </div>
-  <!-- jQuery and Bootstrap Bundle (includes Popper) -->
   <script>
     $(document).ready(function() {
+      var admin = '<?php echo $admin; ?>';
       var name = prompt("Please enter your name:");
       document.getElementById('name').innerHTML = name;
       while (name === "" || name === null) {
