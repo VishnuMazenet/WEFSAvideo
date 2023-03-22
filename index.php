@@ -70,6 +70,7 @@ $conn->close();
       while (name === "" || name === null) {
         name = prompt("Please enter your name to continue watching the video:");
       }
+      document.getElementById('name').innerHTML = name;
       if (name !== null && name !== "") {
         $.ajax({
           url: "admin_check.php",
@@ -103,7 +104,7 @@ $conn->close();
 
       }
     });
-    document.getElementById('name').innerHTML = name;
+    
   </script>
 
 </body>
