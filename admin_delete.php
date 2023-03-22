@@ -12,7 +12,7 @@ if(isset($_POST['id'])) {
     $count = $result->fetch_assoc()['count'];
     if($count == 1) {
         // return an error message
-        echo "<script> prompt('Can't delete the only admin in this table(try again after adding an another name:'); </script>";
+        echo "forbit";
     } else {
         // prepare the SQL query using a parameterized query to prevent SQL injection
         $stmt = $conn->prepare("DELETE FROM view_admin WHERE id = ?");

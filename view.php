@@ -1,5 +1,11 @@
 <?php
 
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header('Location: index.php');
+    exit();
+}
+
 include "config.php";
 
 $stmt = $conn->prepare("SELECT views FROM views where id = 1");
@@ -30,13 +36,23 @@ if ($result->num_rows > 0) {
 </head>
 
 <body>
-    <div class="jumbotron"><center><h1><b>Admin Panel</b></h1></center></div>
+    <div class="jumbotron">
+        <center>
+            <h1><b>Admin Panel</b></h1>
+        </center>
+    </div>
     <div class="container">
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th><center><h4>Admin Name</h4></center></th>
-                    <th colspan="2"><center><button id="addBtn" class="btn btn-success">+ Add</button></center></th>
+                    <th>
+                        <center>
+                            <h4>Admin Name</h4>
+                        </center>
+                    </th>
+                    <th colspan="2">
+                        <center><button id="addBtn" class="btn btn-success">+ Add</button></center>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -81,9 +97,8 @@ if ($result->num_rows > 0) {
                         name: newName
                     },
                     success: function(data) {
-                            // show a success message
-                            //alert("Admin name updated successfully");
-                            location.reload();
+                        // show a success message
+                        location.reload();
 
                     }
                 });
@@ -102,11 +117,16 @@ if ($result->num_rows > 0) {
                         id: id
                     },
                     success: function(data) {
+                        if (data === 'forbit') {
+                            alert("Can't delete the only admin in this table(try again after adding an another name");
+                            location.reload();
+                        } else {
                             // remove the deleted admin row from the table
                             $("#name" + id).closest("tr").remove();
                             // show a success message
-                            //alert("Admin deleted successfully");
                             location.reload();
+
+                        }
 
                     }
                 });
@@ -132,10 +152,9 @@ if ($result->num_rows > 0) {
                         name: newName
                     },
                     success: function(data) {
-                            // show an error message
-                            //alert("Added admin name successfully");
-                            location.reload();
-                        
+                        // show an error message
+                        location.reload();
+
                     }
                 });
             });
@@ -180,8 +199,6 @@ if ($result->num_rows > 0) {
                         url: "delete_views.php",
                         type: "POST",
                         success: function(data) {
-                            // Show success message
-                            // alert(data);
                             // Reload the page to update the views
                             location.reload();
                         },
@@ -202,8 +219,6 @@ if ($result->num_rows > 0) {
                         url: "delete_viewers.php",
                         type: "POST",
                         success: function(data) {
-                            // Show success message
-                            // alert(data);
                             // Reload the page to update the viewers table
                             location.reload();
                         },
@@ -257,7 +272,7 @@ if ($result->num_rows > 0) {
 } else {
     echo '<br><br><center><h3>No viewers found.</h3></center>';
 }
-
+echo "<div class='jumbotron'><form action='index.php' method='post'><center><button class='btn btn-outline-primary' type='submit'>Go to the Video Page</button></center></form></div>";
 // Close the database connection
 $conn->close();
 ?>
