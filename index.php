@@ -104,7 +104,6 @@ $conn->close();
 
       }
     });
-    
   </script>
 
 </body>
