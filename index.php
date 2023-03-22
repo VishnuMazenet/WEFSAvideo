@@ -9,7 +9,6 @@ $result = $stmt->get_result();
 if ($result->num_rows > 0) {
   $row = $result->fetch_assoc();
   $views = $row["views"];
-  
 } else {
   $views = 0;
   $stmt = $conn->prepare("INSERT INTO views (views) VALUE (?)");
@@ -18,15 +17,6 @@ if ($result->num_rows > 0) {
   $result = $stmt->get_result();
 }
 
-$stmt = $conn->prepare("SELECT admin_name FROM view_admin WHERE id = 1");
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows > 0) {
-  $row = $result->fetch_assoc();
-  $admin = $row['admin_name'];
-}
-
-// Close the prepared statement and database connection
 $stmt->close();
 $conn->close();
 
@@ -76,33 +66,41 @@ $conn->close();
   </div>
   <script>
     $(document).ready(function() {
-      var admin = '<?php echo $admin; ?>';
       var name = prompt("Please enter your name:");
-      document.getElementById('name').innerHTML = name;
       while (name === "" || name === null) {
         name = prompt("Please enter your name to continue watching the video:");
       }
       if (name !== null && name !== "") {
-        if (name === admin) {
-          window.location.href = "view.php";
-        } else {
-          $.ajax({
-            url: "save.php",
-            method: "POST",
-            data: {
-              name: name,
-              views: '<?php echo $views; ?>'
-            },
-            success: function(response) {
-              console.log(response);
-              console.log("Name updated");
-            },
-            error: function() {
-              console.log(response);
-              console.log("error");
+        $.ajax({
+          url: "admin_check.php",
+          method: "POST",
+          data: {
+            name: name
+          },
+          success: function(response) {
+            if (response == "match") {
+              window.location.href = "view.php";
+            } else {
+              $.ajax({
+                url: "save.php",
+                method: "POST",
+                data: {
+                  name: name,
+                  views: '<?php echo $views; ?>'
+                },
+                success: function(response) {
+                  console.log(response);
+                  console.log("Name updated");
+                },
+                error: function() {
+                  console.log(response);
+                  console.log("error");
+                }
+              });
             }
-          });
-        }
+          }
+        });
+
       }
     });
     document.getElementById('name').innerHTML = name;

@@ -1,18 +1,28 @@
 <?php
+// include the database configuration file
+include 'config.php';
 
-include("config.php");
+// check if the form is submitted
+if(isset($_POST['id']) && isset($_POST['name'])) {
+    // sanitize the input using server-side validation
+    $id = filter_var($_POST['id'], FILTER_SANITIZE_NUMBER_INT);
+    $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
 
-$admin = $_POST['admin'];
+    // prepare the SQL query using a parameterized query to prevent SQL injection
+    $stmt = $conn->prepare("UPDATE view_admin SET admin_name = ? WHERE id = ?");
+    $stmt->bind_param("si", $name, $id);
 
-$stmt = $conn->prepare("UPDATE `view_admin` SET `admin_name`=? WHERE `id`=1");
-$stmt->bind_param("s", $admin);
-if ($stmt->execute() === FALSE) {
-  echo "Error updating views: " . $stmt->error;
-} else {
-  echo "<script> console.log('Admin name have been update'); </script>";
+    // execute the query and check if it was successful
+    if($stmt->execute()) {
+        // return a success message
+        echo "<script> prompt('Updated successfully'); </script>";
+    } else {
+        // return an error message
+        echo "<script> console.log(Error: $stmt->error) </script>";
+    }
+    
+    // close the statement and database connection
+    $stmt->close();
+    $conn->close();
 }
-$stmt->close();
-
-// Close the database connection
-$conn->close();
 ?>

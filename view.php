@@ -1,25 +1,6 @@
 <?php
 
-include("config.php");
-
-$stmt = $conn->prepare("SELECT admin_name FROM view_admin");
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $admin = $row['admin_name'];
-    }
-}
-echo "<div class='container'>";
-echo "<div class='card text-white bg-success mb-3' style='max-width: 20rem;'>";
-echo " <div class='card card-header'><h5><b>Edit Admin Name</b></h5></div>";
-echo "<div class='card-body'>";
-// echo "<h4 class='card card-title'>Edit Admin Name</h4>";
-echo "<input type = 'text' class='form-control' placeholder='Admin Name' id='admin' value = '$admin'></input><br>";
-echo "<button class = 'card btn btn-success bg bg-success' id = 'update_admin' type = 'submit'>Update</button>";
-echo "</div>";
-echo "</div>";
-echo "</div>";
+include "config.php";
 
 $stmt = $conn->prepare("SELECT views FROM views where id = 1");
 $stmt->execute();
@@ -34,42 +15,7 @@ if ($result->num_rows > 0) {
     $views = 0;
 }
 
-// Retrieve the viewers' names from the database
-$sql = "SELECT * FROM viewers";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    // Output data of each row
-    echo "<div class='container'><br><br>";
-    echo '<div class="form-group">';
-    echo '<input type="text" class="form-control" id="search" placeholder="Search the Name of the Viewers">';
-    echo '</div><br><br>';
-    echo '<table class="table table-bordered table-active">';
-    echo '<thead>';
-    echo '<tr>';
-    echo '<th>ID</th>';
-    echo '<th>Name</th>';
-    echo '</tr>';
-    echo '</thead>';
-    echo '<tbody id="viewerTable">';
-    while ($row = $result->fetch_assoc()) {
-        echo '<tr>';
-        echo '<td>' . htmlspecialchars($row["id"]) . '</td>';
-        echo '<td>' . htmlspecialchars($row["name"]) . '</td>';
-        echo '</tr>';
-    }
-    echo '</tbody>';
-    echo '</table>';
-    echo '</div>';
-} else {
-    echo '<br><br><center><h3>No viewers found.</h3></center>';
-}
-
-// Close the database connection
-$conn->close();
 ?>
-</div>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -84,6 +30,123 @@ $conn->close();
 </head>
 
 <body>
+    <div class="jumbotron"><center><h1><b>Admin Panel</b></h1></center></div>
+    <div class="container">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th><center><h4>Admin Name</h4></center></th>
+                    <th colspan="2"><center><button id="addBtn" class="btn btn-success">+ Add</button></center></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                include "config.php";
+
+                // get the admin names from the database
+                $sql = "SELECT * FROM view_admin";
+                $result = $conn->query($sql);
+
+                if ($result->num_rows > 0) {
+                    // output data of each row
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<tr><td><input type="text" id="name' . $row["id"] . '" class="form-control" value="' . $row["admin_name"] . '"></td><td><button id="updateBtn' . $row["id"] . '" class="btn btn-warning updateBtn" data-id="' . $row["id"] . '">Update</button></td><td><button id="deleteBtn' . $row["id"] . '" class="btn btn-danger deleteBtn" data-id="' . $row["id"] . '">Delete</button></td></tr>';
+                    }
+                } else {
+                    echo '<tr><td colspan="3">No admin names found</td></tr>';
+                }
+
+                $conn->close();
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // handle the update button click
+            $(document).on("click", ".updateBtn", function() {
+                // get the ID of the admin to update
+                var id = $(this).data("id");
+
+                // get the new name of the admin
+                var newName = $("#name" + id).val();
+
+                // send an AJAX request to update the admin name in the database
+                $.ajax({
+                    url: "admin_update.php",
+                    type: "POST",
+                    data: {
+                        id: id,
+                        name: newName
+                    },
+                    success: function(data) {
+                            // show a success message
+                            //alert("Admin name updated successfully");
+                            location.reload();
+
+                    }
+                });
+            });
+
+            // handle the delete button click
+            $(document).on("click", ".deleteBtn", function() {
+                // get the ID of the admin to delete
+                var id = $(this).data("id");
+
+                // send an AJAX request to delete the admin from the database
+                $.ajax({
+                    url: "admin_delete.php",
+                    type: "POST",
+                    data: {
+                        id: id
+                    },
+                    success: function(data) {
+                            // remove the deleted admin row from the table
+                            $("#name" + id).closest("tr").remove();
+                            // show a success message
+                            //alert("Admin deleted successfully");
+                            location.reload();
+
+                    }
+                });
+            });
+
+            // handle the add button click
+            $(document).on("click", "#addBtn", function() {
+                // create a new empty row in the table
+                var rowHtml = '<tr><td><input type="text" id="newName" class="form-control"></td><td><button id="addNewBtn" class="btn btn-primary">Add</button></td><td><button id="cancelBtn" class="btn btn-secondary">Cancel</button></td></tr>';
+                $("table tbody").append(rowHtml);
+            });
+
+            // handle the add new admin button click
+            $(document).on("click", "#addNewBtn", function() {
+                // get the name of the new admin to add
+                var newName = $("#newName").val();
+
+                // send an AJAX request to add the new admin to the database
+                $.ajax({
+                    url: "admin_add.php",
+                    type: "POST",
+                    data: {
+                        name: newName
+                    },
+                    success: function(data) {
+                            // show an error message
+                            //alert("Added admin name successfully");
+                            location.reload();
+                        
+                    }
+                });
+            });
+
+            // handle the cancel button click
+            $(document).on("click", "#cancelBtn", function() {
+                // remove the empty row from the table
+                $(this).closest("tr").remove();
+            });
+        });
+    </script>
     <div class="container">
         <h1>Viewers</h1>
         <div class="card text-white bg-secondary mb-3 text-lg-center" style="max-width: 20rem;">
@@ -107,24 +170,6 @@ $conn->close();
                 $("#viewerTable tr").filter(function() {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
-            });
-            //Update Admin
-            $("#update_admin").click(function() {
-                var admin = document.getElementById("admin").value;
-                $.ajax({
-                    url: "admin_update.php",
-                    type: "POST",
-                    data: {
-                        admin: admin
-                    },
-                    success: function(data) {
-                        //alert(data);
-                        location.reload();
-                    },
-                    error: function() {
-                        alert("Error updating admin name");
-                    }
-                })
             });
             // Delete views button
             $("#dview").click(function() {
@@ -173,4 +218,46 @@ $conn->close();
         });
     </script>
 </body>
+
 </html>
+
+<?php
+
+include("config.php");
+
+
+// Retrieve the viewers' names from the database
+$stmt = $conn->prepare("SELECT * FROM viewers");
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    // Output data of each row
+    echo "<div class='container'><br><br>";
+    echo '<div class="form-group">';
+    echo '<input type="text" class="form-control" id="search" placeholder="Search the Name of the Viewers">';
+    echo '</div><br><br>';
+    echo '<table class="table table-bordered table-active">';
+    echo '<thead>';
+    echo '<tr>';
+    echo '<th>ID</th>';
+    echo '<th>Name</th>';
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody id="viewerTable">';
+    while ($row = $result->fetch_assoc()) {
+        echo '<tr>';
+        echo '<td>' . htmlspecialchars($row["id"]) . '</td>';
+        echo '<td>' . htmlspecialchars($row["name"]) . '</td>';
+        echo '</tr>';
+    }
+    echo '</tbody>';
+    echo '</table>';
+    echo '</div>';
+} else {
+    echo '<br><br><center><h3>No viewers found.</h3></center>';
+}
+
+// Close the database connection
+$conn->close();
+?>
