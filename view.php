@@ -83,10 +83,10 @@ if ($result->num_rows > 0) {
             // handle the update button click
             $(document).on("click", ".updateBtn", function() {
                 // get the ID of the admin to update
-                var id = $(this).data("id");
+                let id = $(this).data("id");
 
                 // get the new name of the admin
-                var newName = $("#name" + id).val();
+                let newName = $("#name" + id).val();
 
                 // send an AJAX request to update the admin name in the database
                 $.ajax({
@@ -107,7 +107,7 @@ if ($result->num_rows > 0) {
             // handle the delete button click
             $(document).on("click", ".deleteBtn", function() {
                 // get the ID of the admin to delete
-                var id = $(this).data("id");
+                let id = $(this).data("id");
 
                 // send an AJAX request to delete the admin from the database
                 $.ajax({
@@ -135,14 +135,14 @@ if ($result->num_rows > 0) {
             // handle the add button click
             $(document).on("click", "#addBtn", function() {
                 // create a new empty row in the table
-                var rowHtml = '<tr><td><input type="text" id="newName" class="form-control"></td><td><button id="addNewBtn" class="btn btn-primary">Add</button></td><td><button id="cancelBtn" class="btn btn-secondary">Cancel</button></td></tr>';
+                let rowHtml = '<tr><td><input type="text" id="newName" class="form-control"></td><td><button id="addNewBtn" class="btn btn-primary">Add</button></td><td><button id="cancelBtn" class="btn btn-secondary">Cancel</button></td></tr>';
                 $("table tbody").append(rowHtml);
             });
 
             // handle the add new admin button click
             $(document).on("click", "#addNewBtn", function() {
                 // get the name of the new admin to add
-                var newName = $("#newName").val();
+                let newName = $("#newName").val();
 
                 // send an AJAX request to add the new admin to the database
                 $.ajax({
@@ -185,7 +185,7 @@ if ($result->num_rows > 0) {
         // Search functionality
         $(document).ready(function() {
             $("#search").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
+                let value = $(this).val().toLowerCase();
                 $("#viewerTable tr").filter(function() {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });

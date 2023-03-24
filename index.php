@@ -66,7 +66,7 @@ $conn->close();
   </div>
   <script>
     $(document).ready(function() {
-      var name = prompt("Please enter your name:");
+      let name = prompt("Please enter your name:");
       while (name === "" || name === null) {
         name = prompt("Please enter your name to continue watching the video:");
       }
