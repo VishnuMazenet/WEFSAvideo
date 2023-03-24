@@ -6,7 +6,7 @@ include 'config.php';
 if(isset($_POST['id']) && isset($_POST['name'])) {
     // sanitize the input using server-side validation
     $id = filter_var($_POST['id'], FILTER_SANITIZE_NUMBER_INT);
-    $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
+    $name = filter_var($_POST['name'], FILTER_UNSAFE_RAW);
 
     // prepare the SQL query using a parameterized query to prevent SQL injection
     $stmt = $conn->prepare("UPDATE view_admin SET admin_name = ? WHERE id = ?");

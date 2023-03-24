@@ -5,7 +5,7 @@ include 'config.php';
 // check if the form is submitted
 if(isset($_POST['name'])) {
     // sanitize the input using server-side validation
-    $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
+    $name = filter_var($_POST['name'], FILTER_UNSAFE_RAW);
 
     // prepare the SQL query using a parameterized query to prevent SQL injection
     $stmt = $conn->prepare("INSERT INTO view_admin (admin_name) VALUES (?)");
