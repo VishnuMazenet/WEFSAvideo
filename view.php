@@ -51,7 +51,7 @@ if ($result->num_rows > 0) {
                         </center>
                     </th>
                     <th colspan="2">
-                        <center><button id="addBtn" class="btn btn-success">+ Add</button></center>
+                        <center><button id="addBtn" class="btn btn-success" style="width:90px;">+ Add</button></center>
                     </th>
                 </tr>
             </thead>
@@ -66,7 +66,7 @@ if ($result->num_rows > 0) {
                 if ($result->num_rows > 0) {
                     // output data of each row
                     while ($row = $result->fetch_assoc()) {
-                        echo '<tr><td><input type="text" id="name' . $row["id"] . '" class="form-control" value="' . $row["admin_name"] . '"></td><td><button id="updateBtn' . $row["id"] . '" class="btn btn-warning updateBtn" data-id="' . $row["id"] . '">Update</button></td><td><button id="deleteBtn' . $row["id"] . '" class="btn btn-danger deleteBtn" data-id="' . $row["id"] . '">Delete</button></td></tr>';
+                        echo '<tr><td><input type="text" id="name' . $row["id"] . '" class="form-control" value="' . $row["admin_name"] . '"></td><td><center><button id="updateBtn' . $row["id"] . '" class="btn btn-warning updateBtn" data-id="' . $row["id"] . '">Update</button></center></td><td><center><button id="deleteBtn' . $row["id"] . '" class="btn btn-danger deleteBtn" data-id="' . $row["id"] . '">Delete</button></center></td></tr>';
                     }
                 } else {
                     echo '<tr><td colspan="3">No admin names found</td></tr>';
@@ -135,7 +135,7 @@ if ($result->num_rows > 0) {
             // handle the add button click
             $(document).on("click", "#addBtn", function() {
                 // create a new empty row in the table
-                let rowHtml = '<tr><td><input type="text" id="newName" class="form-control"></td><td><button id="addNewBtn" class="btn btn-primary">Add</button></td><td><button id="cancelBtn" class="btn btn-secondary">Cancel</button></td></tr>';
+                let rowHtml = '<tr><td><input type="text" id="newName" class="form-control"></td><td><center><button id="addNewBtn" class="btn btn-primary">Add</button></center></td><td><center><button id="cancelBtn" class="btn btn-secondary">Cancel</button></center></td></tr>';
                 $("table tbody").append(rowHtml);
             });
 
@@ -176,8 +176,8 @@ if ($result->num_rows > 0) {
             </div>
         </div>
         <form method="post">
-            <button type="submit" id="dview" class="btn btn-warning">Delete Views</button>
-            <button type="submit" id="dviewer" class="btn btn-warning">Delete Viewers</button>
+            <button type="submit" id="dview" class="btn btn-warning" style="width:150px;">Delete Views</button>
+            <button type="submit" id="dviewer" class="btn btn-warning" style="width:150px;">Delete Viewers</button>
         </form>
     </div>
 
